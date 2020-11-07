@@ -1,0 +1,31 @@
+# Import data
+dat <- read.table("https://online.stat.psu.edu/onlinecourses/sites/stat501/files/data/student_height_weight.txt")
+
+# Specify y and x
+y <- dat$wt
+x <- dat$ht
+
+# Fit a simple linear regression 
+mod <- lm(ht ~ wt, data = dat)
+
+# Summary
+summary(mod)
+
+
+# Plot and superimpose
+plot(x, y, main = "Student data", xlab = "weight", ylab = "height",
+     sub = "Example 1")
+abline(lm(y ~ x, data = dat), col = "blue")
+
+
+# Using ggplot2
+# save predictions of the model in the new data frame 
+# together with variable you want to plot against
+predicted_df <- data.frame(wt_pred = predict(mod, dat), hp = dat$wt)
+
+# this is the predicted line of multiple linear regression
+p <- ggplot(data = dat, aes(x = ht, y = wt)) + 
+        geom_point(color='blue') +
+        geom_line(color='red',data = predicted_df, aes(x = wt_pred, y = hp))
+p  + labs(ylab = "weight", xlab = "height", 
+          title = "Student data", subtitle = "Example 1")    
