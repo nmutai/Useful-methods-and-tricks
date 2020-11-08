@@ -1,0 +1,18 @@
+# seq, seq_len and seq_alog.
+
+# seq generates a regular sequence. 
+
+# seq_along(x) takes a vector for x, and it creates a sequence upto the count 
+# of elements in the vector.
+
+# seq_len(x) takes numeric for x, it creates a sequence upto the number x. 
+
+# Example
+x <- seq(6)
+seq_len(x) # warning 
+seq_len(length(x)) 
+seq_len(x[6])
+seq_along(x) 
+
+seq_along(x) ==  seq_len(length(x))
+seq_len(x) == seq_len(x[1])
