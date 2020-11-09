@@ -1,0 +1,13 @@
+# paste and cat
+?paste # concatenate strings
+args(paste)
+paste(1:12)
+as.character(1:12)
+paste0(1:12)
+(nth <- paste0(1:12, c("st", "nd", "rd", rep("th", 9))))
+paste(c(1,2,3), c("a","b","c"))
+paste0(c(1,2,3), c("a","b","c"))
+paste(month.abb, "is the", nth, "month of the year.")
+paste(month.abb, letters)
+paste("a", "b", sep = ":")
+paste0("a", "b", sep = ":")
