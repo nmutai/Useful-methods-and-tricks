@@ -1,0 +1,61 @@
+# Cook's distance
+
+library(tidyverse)
+
+# Inject outliers into data.
+cars1 <- cars[1:30, ]  # original data
+cars_outliers <- data.frame(speed=c(1,19), dist=c(198,199))  # introduce outliers.
+cars2 <- rbind(cars1, cars_outliers)  # data with outliers.
+
+
+# Plot of data with outliers.
+
+plot1 <- ggplot(data = cars1, aes(x = speed, y = dist)) +
+        geom_point() + 
+        geom_smooth(method = lm) +
+        xlim(0, 20) + ylim(0, 220) + 
+        ggtitle("No Outliers")
+plot2 <- ggplot(data = cars2, aes(x = speed, y = dist)) +
+        geom_point() + 
+        geom_smooth(method = lm) +
+        xlim(0, 20) + ylim(0, 220) + 
+        ggtitle("With Outliers")
+
+gridExtra::grid.arrange(plot1, plot2, ncol=2)
+
+
+mod <- lm(dist ~ speed, data = cars2)
+cooksd <- cooks.distance(mod)
+
+# Plot the Cook's Distance using the traditional 4/n criterion
+sample_size <- nrow(cars2)
+plot(cooksd, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
+abline(h = 4/sample_size, col="red")  # add cutoff line
+text(x=1:length(cooksd)+1, y=cooksd, labels=ifelse(cooksd>4/sample_size, names(cooksd),""), col="red")  # add labels
+
+
+
+
+# Removing Outliers
+# influential row numbers
+influential <- as.numeric(names(cooksd)[(cooksd > (4/sample_size))])
+
+# Alternatively, you can try to remove the top x outliers to have a look
+# top_x_outlier <- 2
+# influential <- as.numeric(names(sort(cooksd, decreasing = TRUE)[1:top_x_outlier]))
+
+cars2_screen <- cars2[-influential, ]
+
+plot3 <- ggplot(data = cars2, aes(x = speed, y = dist)) +
+        geom_point() + 
+        geom_smooth(method = lm) +
+        xlim(0, 20) + ylim(0, 220) + 
+        ggtitle("Before")
+plot4 <- ggplot(data = cars2_screen, aes(x = speed, y = dist)) +
+        geom_point() + 
+        geom_smooth(method = lm) +
+        xlim(0, 20) + ylim(0, 220) + 
+        ggtitle("After")
+
+gridExtra::grid.arrange(plot3, plot4, ncol=2)
+
