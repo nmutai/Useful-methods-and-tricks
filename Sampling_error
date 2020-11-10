@@ -1,0 +1,42 @@
+# Sampling error 
+population <- c(1,2,3,4,5,6,7,8,9,10)
+my.experiment <- NULL
+for (i in 1:5) {
+  my.sample <- sample(population, size = 3)
+  my.experiment <- c(my.experiment, mean(my.sample))
+  cat(sprintf("Sample number %s has a mean of %s.\n", i, round(mean(my.sample), 2)))
+}
+
+pop <- 1:100
+pop.mean <- mean(pop)
+vector.error.sample_10 <- NULL
+vector.error.sample_25 <- NULL
+vector.error.sample_50 <- NULL
+vector.error.sample_75 <- NULL
+
+
+trials <- 1000
+for (trial in 1:trials){
+        my.sample_10 <- sample(pop, 10)
+        my.sample_25 <- sample(pop, 25)
+        my.sample_50 <- sample(pop, 50)
+        my.sample_75 <- sample(pop, 75)
+        
+        error.sample_10 <- abs(mean(my.sample_10) - pop.mean)
+        error.sample_25 <- abs(mean(my.sample_25) - pop.mean)
+        error.sample_50 <- abs(mean(my.sample_50) - pop.mean)
+        error.sample_75 <- abs(mean(my.sample_75) - pop.mean)
+        
+        vector.error.sample_10 <- c(vector.error.sample_10, error.sample_10)
+        vector.error.sample_25 <- c(vector.error.sample_25, error.sample_25)
+        vector.error.sample_50 <- c(vector.error.sample_50, error.sample_50)
+        vector.error.sample_75 <- c(vector.error.sample_75, error.sample_75)
+}
+
+print(paste('Sampling Error, n = 10: ', mean(vector.error.sample_10)))
+print(paste('Sampling Error, n = 25: ', mean(vector.error.sample_25)))
+print(paste('Sampling Error, n = 50: ', mean(vector.error.sample_50)))
+print(paste('Sampling Error, n = 75: ', mean(vector.error.sample_75)))
+
+
+
