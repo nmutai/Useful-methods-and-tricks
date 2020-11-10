@@ -1,0 +1,39 @@
+# Sampling distribution
+pop <- 1:100 # initialize population as all integers between 1 and 100
+n <- 30 # sample size
+
+# set ploting parameters
+par(mfrow = c(3, 2), mar = c(2, 2, 2, 3), xpd = FALSE)
+
+# start experiment
+no.samples <- c(1, 10, 100, 500, 1000, 3000) # set number of samples to be drawn
+
+# run experiment 6 times
+for (i in 1:length(no.samples)) {
+  # draw either 1, 10, 100, 500, 1000 or 2000 random samples of sample size n=30
+  my.samples <- rep(NA, no.samples[i]) # initialize empty vector for size i
+  for (j in 1:no.samples[i]) {
+    # take random samples for j times and calculate the sample mean
+    my.samples[j] <- mean(sample(pop, n))
+  }
+  # plot result (NOTE: Please note that the stripchart function does not scale well.                If you want to experiment with the code you should plot histograms instead)
+  stripchart(my.samples,
+    method = "stack",
+    offset = 0.4,
+    at = .01,
+    pch = 19,
+    col = "red",
+    xlim = c(30, 70)
+  )
+
+  abline(v = mean(pop), lty = 2)
+  text(
+    x = mean(pop) * 1.25,
+    y = 1.8,
+    labels = paste(no.samples[i], " random\nsamples"),
+    col = "red"
+  )
+  text(x = mean(pop) * 0.98, y = 1.8, labels = expression(mu))
+}
+# add title
+mtext(expression(paste("Relative frequency distribution (occurrences) of ", bar(x))), outer = TRUE, cex = 1, line = -1.5)
