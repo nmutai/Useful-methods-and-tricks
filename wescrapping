@@ -1,0 +1,76 @@
+# Webscraping 
+
+# Read in data from Wikipedia HTML tables
+
+library(rvest)
+
+#Summer olympics medal tally
+
+url <- "https://en.wikipedia.org/wiki/2016_Summer_Olympics_medal_table"
+
+
+medal_tally <- url %>% 
+        read_html() %>% 
+        html_nodes(xpath='//*[@id="mw-content-text"]/div/table[2]') %>% html_table(fill=TRUE)
+
+medal_tally <- medal_tally[[1]]
+head(medal_tally)
+a <- dput(medal_tally$NOC)
+df <- data.frame(country = c("United States (USA)", "Great Britain (GBR)", "China (CHN)", 
+                             "Russia (RUS)", "Germany (GER)", "Japan (JPN)", "France (FRA)", 
+                             "South Korea (KOR)", "Italy (ITA)", "Australia (AUS)", "Netherlands (NED)", 
+                             "Hungary (HUN)", "Brazil (BRA)*", "Spain (ESP)", "Kenya (KEN)", 
+                             "Jamaica (JAM)", "Croatia (CRO)", "Cuba (CUB)", "New Zealand (NZL)", 
+                             "Canada (CAN)", "Uzbekistan (UZB)", "Kazakhstan (KAZ)", "Colombia (COL)", 
+                             "Switzerland (SUI)", "Iran (IRI)", "Greece (GRE)", "Argentina (ARG)", 
+                             "Denmark (DEN)", "Sweden (SWE)", "South Africa (RSA)", "Ukraine (UKR)", 
+                             "Serbia (SRB)", "Poland (POL)", "North Korea (PRK)", "Belgium (BEL)", 
+                             "Thailand (THA)", "Slovakia (SVK)", "Georgia (GEO)", "Azerbaijan (AZE)", 
+                             "Belarus (BLR)", "Turkey (TUR)", "Armenia (ARM)", "Czech Republic (CZE)", 
+                             "Ethiopia (ETH)", "Slovenia (SLO)", "Indonesia (INA)", "Romania (ROU)", 
+                             "Bahrain (BRN)", "Vietnam (VIE)", "Chinese Taipei (TPE)", "Bahamas (BAH)", 
+                             "Independent Olympic Athletes (IOA)", "Ivory Coast (CIV)", "Fiji (FIJ)", 
+                             "Jordan (JOR)", "Kosovo (KOS)", "Puerto Rico (PUR)", "Singapore (SIN)", 
+                             "Tajikistan (TJK)", "Malaysia (MAS)", "Mexico (MEX)", "Venezuela (VEN)", 
+                             "Algeria (ALG)", "Ireland (IRL)", "Lithuania (LTU)", "Bulgaria (BUL)", 
+                             "India (IND)", "Mongolia (MGL)", "Burundi (BDI)", "Grenada (GRN)", 
+                             "Niger (NIG)", "Philippines (PHI)", "Qatar (QAT)", "Norway (NOR)", 
+                             "Egypt (EGY)", "Tunisia (TUN)", "Israel (ISR)", "Austria (AUT)", 
+                             "Dominican Republic (DOM)", "Estonia (EST)", "Finland (FIN)", 
+                             "Morocco (MAR)", "Nigeria (NGR)", "Portugal (POR)", "Trinidad and Tobago (TTO)", 
+                             "United Arab Emirates (UAE)", "Totals (86 NOCs)"))
+
+library(countrycode)
+df$continent <- countrycode(sourcevar = df[, "country"],
+                            origin = "country.name",
+                            destination = "continent")
+head(df)
+df2 <- data.frame(medal_tally, df)
+head(df2 )
+tail(df2)
+
+df3 <- df2[complete.cases(df2),]
+head(df3)
+tail(df3)
+
+
+# Boxplots 
+library(ggplot2)
+ggplot(df3, aes(x=continent, y=Total, fill=continent)) + 
+        geom_boxplot(alpha=0.3) +
+        theme(legend.position="none")
+
+
+# Bar graph 
+ggplot(df3, aes(x=continent, y=Total)) + 
+        geom_bar(stat = "identity")
+
+
+df3.p <- ggplot(df3, aes(x=as.factor(continent), fill=as.factor(continent) )) +  
+        geom_bar( ) +
+        scale_fill_manual(values = c("red", "green", "blue","grey","purple") ) +
+        theme(legend.position="right") 
+df3.p + xlab("Continent") + 
+        ylab("Total medals") +
+        guides(fill=guide_legend(title="Continents")) +
+        ggtitle("2016 Summer olympics medal tally")
