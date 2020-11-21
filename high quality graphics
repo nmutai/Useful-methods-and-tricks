@@ -1,0 +1,16 @@
+install.packages('Cairo')
+library(Cairo)
+library(ggplot2)
+p <- ggplot(data = diamonds, aes(x = price, y = carat, colour = color)) +
+  geom_point()
+
+Cairo::Cairo(
+  13, 8,               # width, height in inch
+  units = "in",        # unit of width and height of image, inches
+  "diamond_plot.tiff", # name of the exported image
+  bg = "white",        # white background
+  type = "tiff",       # tiff image file
+  dpi = 300            # DPI resolution
+)
+p
+invisible(dev.off())   # dev.off() close the file
