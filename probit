@@ -1,0 +1,31 @@
+# estimate the simple probit model
+library(AER)
+data("HMDA")
+denyprobit <- glm(deny ~ pirat, 
+                  family = binomial(link = "probit"), 
+                  data = HMDA)
+
+coeftest(denyprobit, vcov. = vcovHC, type = "HC1")
+
+
+# plot data
+plot(x = HMDA$pirat, 
+     y = HMDA$deny,
+     main = "Probit Model of the Probability of Denial, Given P/I Ratio",
+     xlab = "P/I ratio",
+     ylab = "Deny",
+     pch = 20,
+     ylim = c(-0.4, 1.4),
+     cex.main = 0.85)
+
+# add horizontal dashed lines and text
+abline(h = 1, lty = 2, col = "darkred")
+abline(h = 0, lty = 2, col = "darkred")
+text(2.5, 0.9, cex = 0.8, "Mortgage denied")
+text(2.5, -0.1, cex= 0.8, "Mortgage approved")
+
+# add estimated regression line
+x <- seq(0, 3, 0.01)
+y <- predict(denyprobit, list(pirat = x), type = "response")
+
+lines(x, y, lwd = 1.5, col = "steelblue")
