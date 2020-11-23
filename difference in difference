@@ -14,3 +14,97 @@ summary(didreg1)
 
 
 
+# set sample size
+n <- 200
+
+# define treatment effect
+TEffect <- 4
+
+# generate treatment dummy
+TDummy <- c(rep(0, n/2), rep(1, n/2))
+
+# simulate pre- and post-treatment values of the dependent variable
+y_pre <- 7 + rnorm(n)
+y_pre[1:n/2] <- y_pre[1:n/2] - 1
+y_post <- 7 + 2 + TEffect * TDummy + rnorm(n)
+y_post[1:n/2] <- y_post[1:n/2] - 1 
+
+
+
+library(scales)
+
+pre <- rep(0, length(y_pre[TDummy==0]))
+post <- rep(1, length(y_pre[TDummy==0]))
+
+# plot control group in t=1
+plot(jitter(pre, 0.6), 
+     y_pre[TDummy == 0], 
+     ylim = c(0, 16), 
+     col = alpha("steelblue", 0.3),
+     pch = 20, 
+     xlim = c(-0.5, 1.5),
+     ylab = "Y",
+     xlab = "Period",
+     xaxt = "n",
+     main = "Artificial Data for DID Estimation")
+
+axis(1, at = c(0, 1), labels = c("before", "after"))
+
+
+# add treatment group in t=1
+points(jitter(pre, 0.6), 
+       y_pre[TDummy == 1], 
+       col = alpha("darkred", 0.3), 
+       pch = 20)
+
+# add control group in t=2
+points(jitter(post, 0.6),
+       y_post[TDummy == 0], 
+       col = alpha("steelblue", 0.5),
+       pch = 20)
+
+# add treatment group in t=2
+points(jitter(post, 0.6), 
+       y_post[TDummy == 1], 
+       col = alpha("darkred", 0.5),
+       pch = 20)
+
+
+# compute the DID estimator for the treatment effect 'by hand'
+mean(y_post[TDummy == 1]) - mean(y_pre[TDummy == 1]) - 
+    (mean(y_post[TDummy == 0]) - mean(y_pre[TDummy == 0]))
+
+# compute the DID estimator using a linear model
+lm(I(y_post - y_pre) ~ TDummy)
+
+
+# prepare data for DID regression using the interaction term 
+d <- data.frame("Y" = c(y_pre,y_post),
+                "Treatment" = TDummy, 
+                "Period" = c(rep("1", n), rep("2", n)))
+
+# estimate the model
+lm(Y ~ Treatment * Period, data = d)
+
+
+
+# generate some sample data
+W <- runif(1000, -1, 1)
+y <- 3 + 2 * W + 10 * (W>=0) + rnorm(1000)
+
+# load the package 'rddtools'
+library(rddtools)
+
+# construct rdd_data 
+data <- rdd_data(y, W, cutpoint = 0)
+
+# plot the sample data
+plot(data,
+     col = "steelblue",
+     cex = 0.35, 
+     xlab = "W", 
+     ylab = "Y")
+
+
+
+
