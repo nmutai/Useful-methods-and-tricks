@@ -1,0 +1,24 @@
+library(DataExplorer)
+help(package=DataExplorer)
+plot_qq(iris)
+plot_qq(iris, by = "Species", ncol = 2L)
+
+plot_qq(
+    data = airquality,
+    geom_qq_args = list(na.rm = TRUE),
+    geom_qq_line_args = list(na.rm = TRUE)
+)
+
+# Plot bar charts for diamonds dataset
+library(ggplot2)
+plot_bar(diamonds)
+plot_bar(diamonds, maxcat = 5)
+
+# Plot bar charts with `price`
+plot_bar(diamonds, with = "price")
+
+# Plot bar charts by `cut`
+plot_bar(diamonds, by = "cut")
+plot_bar(diamonds, by = "cut", by_position = "dodge")
+
+
