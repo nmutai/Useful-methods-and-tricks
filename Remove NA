@@ -1,0 +1,43 @@
+# Dropping NA
+
+# Create example data
+
+data <- data.frame(First = c(4, 1, NA, 7, 8, 1),   
+                   sECOND = c("A", NA, NA, "XX", "YO", "YA"),
+                   s3 = c(1, 0, NA, 1, 1, NA))
+
+data
+
+names(clean_names(data))
+# Apply na.omit function
+data1 <- na.omit(data)                           
+data1
+
+
+# Apply complete.cases function
+data2 <- data[complete.cases(data), ]           
+
+
+# Apply rowSums & is.na
+data3 <- data[rowSums(is.na(data)) == 0, ]       
+
+# # Install & load tidyr package
+# install.packages("tidyr")                        
+library("tidyr")
+
+# # Apply drop_na function
+data4 <- data %>% 
+         drop_na()                      
+
+# # Apply is.na function
+data5 ＜- data[!is.na(data$x1), ]                 
+
+# Install dplyr package
+install.packages("dplyr")  
+
+# Load dplyr package
+library("dplyr")                                 
+
+
+# Apply filter function
+data6 <- filter(data, !is.na(data$x1))           
