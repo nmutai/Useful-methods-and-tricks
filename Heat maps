@@ -1,0 +1,22 @@
+install.packages(c("mplot","pairsD3","Hmisc","d3heatmap","mfp","dplyr"))
+library(d3heatmap)
+data("diabetes", package="mplot")
+# help("diabetes", package="mplot")
+str(diabetes) # structure of the diabetes
+pairs(diabetes) # traditional pairs plot
+boxplot(diabetes) # always a good idea to check for gross outliers
+
+pairsD3::shinypairs(diabetes) # interactive pairs plot of the data set
+d3heatmap::d3heatmap(cor(diabetes))
+Hmisc::describe(diabetes,digits=1) # summary of the diabetes data
+
+
+# Backwards
+M0 = lm(y ~ 1, data = diabetes)  # Null model
+M1 = lm(y ~ ., data = diabetes)  # Full model
+summary(M1)
+dim(diabetes)
+
+step.back.bic = step(M1, direction = "backward", trace = FALSE, 
+                     k = log(442))
+summary(step.back.bic)
