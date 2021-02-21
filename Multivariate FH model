@@ -1,0 +1,24 @@
+library(msae)
+help(package=msae)
+## Load dataset
+data(datasae1)
+
+# Compute EBLUP and MSE of Y1 Y2 and Y3  based on Model 1
+# using auxiliary variables X1 and X2 for each dependent variable
+
+## Using parameter 'data'
+Fo <- list(f1=Y1~X1+X2,
+           f2=Y2~X1+X2,
+           f3=Y3~X1+X2)
+vardir <- c("v1", "v2", "v3", "v12", "v13", "v23")
+m1 <- eblupMFH1(Fo, vardir, data=datasae1)
+
+## Without parameter 'data'
+Fo <- list(f1=datasae1$Y1~datasae1$X1+datasae1$X2,
+           f2=datasae1$Y2~datasae1$X1+datasae1$X2,
+           f3=datasae1$Y3~datasae1$X1+datasae1$X2)
+vardir <- datasae1[,c("v1", "v2", "v3", "v12", "v13", "v23")]
+m1 <- eblupMFH1(Fo, vardir)
+
+m1$eblup   # see the EBLUP estimators
+m1$MSE   # see MSE of EBLUP estimators
