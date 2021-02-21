@@ -1,0 +1,10 @@
+library(tidyverse)
+student_debt <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-02-09/student_debt.csv")
+
+student_debt
+
+student_debt %>%
+    ggplot(aes(year, loan_debt_pct, color = race)) +
+    geom_point(size = 2.5, alpha = 0.8) +
+    geom_smooth(method = "lm", se = FALSE) +
+    labs(x = "Year", y = "% of families with student loan debt", color = NULL)
