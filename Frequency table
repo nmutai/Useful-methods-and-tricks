@@ -1,0 +1,35 @@
+# Frequenca table in R
+# Clear workspace
+rm(list = ls(all.names = TRUE))
+
+# Load library
+library(GLMsData)
+
+# Load data
+data("lungcap")
+
+# Attach data
+attach(lungcap)
+
+# Define breaks for frequecy table. 
+breaks <- seq(from = min(Age), to = max(Age), by = 3)
+
+# start with lowest value of age and ends with max value of age
+# class width is 3. 
+
+# Use the cut function 
+lungcap$age_classes <- cut(Age, breaks = breaks, right = FALSE, 
+                           include.lowest = TRUE)
+
+# right = FALSE mean [# )
+# include.lowest = TRUE, include minimum age. 
+
+# check table
+table(lungcap$age_classes)
+cbind(table(lungcap$age_classes))
+
+# Rename colnames
+title <- cbind(table(lungcap$age_classes))
+colnames(title) <- c("Frequency")
+title
+detach(lungcap)
