@@ -1,0 +1,14 @@
+# specifications of how to model,
+# coming from somewhere else
+outcome <- "mpg"
+variables <- c("cyl", "disp", "hp", "carb")
+
+# our modeling effort, 
+# fully parameterized!
+f <- as.formula(paste(outcome, paste(variables, collapse = " + "), 
+          sep = " ~ "))
+print(f)
+# mpg ~ cyl + disp + hp + carb
+
+model <- lm(f, data = mtcars)
+print(model)
