@@ -1,0 +1,44 @@
+# Categorize Multiple Numerical Columns in R
+library(tidyverse)
+set.seed(2021)
+df <- tibble(id=paste0(rep(letters[1:5],5)),
+             x1 = rnorm(25,mean=20,sd=10),
+             x2 = rnorm(25,mean=15,sd=5),
+             x3 = rnorm(25,mean=12,sd=6))
+df
+
+
+# Categorizing a numerical vector with cut() 
+
+df %>%
+    pull(x1) %>%
+    cut(breaks=c(-Inf,10,20,Inf), 
+        labels=c("low", "middle", "high"))
+
+
+# Categorizing Multiple numerical columns with pivot_longer, cut and pivot_wider() 
+
+df %>% 
+    pivot_longer(-id,
+                 names_to = "vars", values_to="groups") 
+
+df %>% 
+    pivot_longer(-id,
+                 names_to = "vars", values_to="groups") %>%
+    mutate(groups=cut(groups,breaks=c(-Inf,10,20,Inf), 
+                      labels=c("low", "middle", "high")))
+
+df %>% 
+    pivot_longer(-id,
+                 names_to = "vars", values_to="groups") %>%
+    mutate(groups=cut(groups,breaks=c(-Inf,10,20,Inf), 
+                      labels=c("low", "middle", "high"))) %>%
+    pivot_wider(names_from = vars, values_from = groups)
+
+
+# How to Categorize Multiple numerical columns using column-wise function across()?
+df %>%
+    mutate(across(where(is.numeric), 
+                  ~ cut(.x, breaks=c(-Inf,10,20,Inf), 
+                        labels=c("low", "middle", "high")))) 
+
