@@ -1,0 +1,19 @@
+# Linear regression with and without intercept 
+set.seed(23985742)
+x1   <- rnorm(100)
+x2   <- rnorm(100) + 0.2 * x1
+y    <- rnorm(100) + x1 + x2
+data <- data.frame(x1, x2, y)
+head(data)
+
+
+# Estimate model with intercept
+mod_intercept <- lm(y ~ x1 + x2, data)    
+# Summary statistics of model with intercept
+summary(mod_intercept)   
+
+# Estimate model without intercept
+mod_no_intercept <- lm(y ~ 0 + x1 + x2, data)  
+
+# Summary statistics of model without intercept
+summary(mod_no_intercept)                        
