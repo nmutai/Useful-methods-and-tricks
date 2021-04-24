@@ -1,0 +1,36 @@
+url <- 'https://vincentarelbundock.github.io/Rdatasets/csv/palmerpenguins/penguins.csv'
+dat <- read.csv(url)
+
+# rescale mm -> cm
+dat$bill_length_cm <- dat$bill_length_mm / 10
+dat$flipper_length_cm <- dat$flipper_length_mm / 10
+
+mod <- lm(bill_length_cm ~ flipper_length_cm + species, data = dat)
+library(modelsummary)
+
+modelplot(mod)
+
+modelplot(mod, coef_omit = 'Interc')
+
+cm <- c('speciesChinstrap' = 'Chinstrap',
+        'speciesGentoo' = 'Gentoo', 
+        'flipper_length_cm' = 'Flipper length (cm)')
+
+modelplot(mod, coef_map = cm)
+
+
+models <- list()
+models[['Small model']] <- lm(bill_length_cm ~ flipper_length_cm, data = dat)
+models[['Medium model']] <- lm(bill_length_cm ~ flipper_length_cm + body_mass_g, data = dat)
+models[['Large model']] <- lm(bill_length_cm ~ flipper_length_cm + body_mass_g + species, data = dat)
+
+modelsummary(models, statistic = 'conf.int')
+
+
+
+modelplot(models, coef_omit = 'Interc')
+
+modelplot(models, facet = TRUE)
+
+
+modelplot(models, draw = FALSE)
