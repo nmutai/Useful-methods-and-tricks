@@ -1,0 +1,85 @@
+# Why weight?
+sc <- c(rep(100, 100), rep(150,100))
+wt <- c(rep(10,100), rep(100,100))
+df <- data.frame(sc, wt)
+mean(df$sc) #unweighted
+weighted.mean(df$sc, df$wt) #weighted mean
+
+
+# Simulate data with weights
+library(nlme)
+library(lme4)
+library(dplyr)
+library(jtools)
+
+### can ignore this section, what is important is the dat file at the end
+l2s <- 10 #number of clusters
+l1 <- 20 #number of units per cluster
+G01 <- .3 #effect L2
+G11 <- .5 #effect L1
+
+set.seed(12345)
+tmp2 <- rnorm(l2s, 0, 1)
+tmp3 <- rep(c(0,1), each = 5)
+W2 <- rep(tmp2, each = l1) #l2 predictor
+FEM <- rbinom(l2s * l1, 1, .5) #gender l1
+X1 <- rnorm(l2s * l1, 0, 2) #l1 predictor
+e2 <- rep(rnorm(l2s, 0, 1), each = l1) #l2 error
+grp <- rep(1:l2s, each = l1)
+e1 <- rnorm(l2s * l1, 0, 2) #this controls the ICC
+y <- G01 * W2 + G11 * X1 + FEM * .4 + e2 + e1
+wts <- rep(c(10, 10, 5, 5, 1), each = 40) #these are the weights
+#in this case, just place them after to show differences
+#weights could result in: did not use them for the creation of y
+dat <- data.frame(y, X1, W2, FEM, grp, wts) #this is our dataset
+mean(dat$y)
+weighted.mean(dat$y, dat$wts)
+weighted.mean(dat$y, dat$wts) - mean(dat$y)
+
+### by gender (FEMale = 1)
+dat %>%
+    group_by(FEM) %>%
+    summarise(m.u = mean(y),
+              m.w = weighted.mean(y, wts))
+
+library(tableone)
+vars <- c('y', 'X1', 'W2')
+t1 <- CreateTableOne(data = dat, vars = vars, strata = 'FEM')
+print(t1, smd = T) #smd = T to show standardized mean differences
+
+
+
+library(survey)
+des <- svydesign(ids = ~grp, weights = ~wts, data = dat)
+t2 <- svyCreateTableOne(data = des, strata = "FEM", vars = vars)
+print(t2, smd = T)
+
+
+
+library(lme4)
+m0.uw <- lmer(y ~ (1|grp), data = dat) #using lme4
+m0.w <- update(m0.uw, weights = wts) #with weights
+summary(m0.uw)
+summary(m0.w) 
+
+
+m1.uw <- lmer(y ~ W2 + X1 + FEM + (1|grp), data = dat) #using lme4
+m1.w <- update(m1.uw, weights = wts)
+#export_summs(m1.uw, m1.w, model.names = c('UnW', 'W'), digits = 3)
+library(stargazer)
+stargazer(m1.uw, m1.w, type = 'text', digits = 3, 
+          no.space = T, intercept.bottom = F, 
+          star.cutoffs = c(.05, .01, .001),
+          column.labels = c('UnW', 'W'))
+
+
+library(nlme) 
+nlme.u <- lme(y ~ W2 + X1 + FEM, random = ~1|grp, data = dat) #using nlme
+nlme.w1 <- update(nlme.u, weights = ~wts) #incorrect
+nlme.w2 <- update(nlme.u, weights = ~1/wts) #correct
+stargazer(nlme.u, nlme.w1, nlme.w2, m1.w, type = 'text', 
+          digits = 3, no.space = T, intercept.bottom = F, 
+          star.cutoffs = c(.05, .01, .001), 
+          column.labels = c('nlme.UnW', 'nlme.W [wrong]' ,'nlme.W [correct]', 'lmer.W'),
+          dep.var.caption = '', dep.var.labels.include = F,
+          model.names = F)
