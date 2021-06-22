@@ -1,0 +1,25 @@
+set.seed(1) # Reproducibility
+n=1000
+y = runif(n, min=-1, max=1)
+a = factor(sample(1:5, size=n, replace=T))
+b = runif(n)
+
+# Make y dependent on the other two variables
+y = y + b * 0.1 + ifelse(a==1, 0.25, 0)
+mydata = data.frame(y,a,b)
+
+# Models
+base = lm(y ~ a, data=mydata)
+full = lm(y ~ a + b, data=mydata)
+
+# Anova
+anova(base, full, test="LRT")
+
+# lrtest
+library(lmtest)
+lrtest(base, full)
+
+# Homebrew log-likelihood test
+like.diff = logLik(full) - logLik(base)
+df.diff = base$df.residual - full$df.residual
+pchisq(as.numeric(like.diff) * 2, df=df.diff, lower.tail=F)
