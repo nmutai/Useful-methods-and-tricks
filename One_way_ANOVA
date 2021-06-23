@@ -1,0 +1,10 @@
+# One-way-ANOVA in R.
+setwd("C:/Users/nmutai/Desktop/Design and Analysis of Experiments with R/anova")
+donuts <- read.table("donuts.txt",header=TRUE)
+attach(donuts)
+sdonuts <- stack(donuts)
+summary(donuts)
+attach(sdonuts)
+boxplot(values ~ ind)
+oneway.test(values ~ ind, var.equal=TRUE)
+
