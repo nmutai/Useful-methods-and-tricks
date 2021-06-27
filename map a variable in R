@@ -1,0 +1,22 @@
+# Mapping a variable to a shapefile in R 
+# Using tmap R package
+# Load libraries
+library(tmap)
+
+# Load shape file
+# Shapefiles can be downloaded from GDAM
+# https://gadm.org/download_country_v3.html
+
+# Import your data frame
+mydata <- read.csv("yourdata.csv")
+
+# Join data to shapefile using merge by key
+myshp <- merge(shp, mydata , by='key')
+
+# Save shapefile
+shapefile(myshp, "directory/myshp.shp")
+
+# Map
+tm_shape(myshp) +
+    tm_polygons("variable", style = "quantile", n = 6, palette = "Greens") +
+    tm_legend(outside = FALSE)
