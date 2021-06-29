@@ -1,0 +1,30 @@
+# Crosstabulation
+# Source: http://rstudio-pubs-static.s3.amazonaws.com/6975_c4943349b6174f448104a5513fed59a9.html
+
+ID <- seq(1:177)
+Age <- sample(c("0-15", "16-29", "30-44", "45-64", "65+"), 177, replace = TRUE)
+Sex <- sample(c("Male", "Female"), 177, replace = TRUE)
+Country <- sample(c("England", "Wales", "Scotland", "N. Ireland"), 177, replace = TRUE)
+Health <- sample(c("Poor", "Average", "Good"), 177, replace = TRUE)
+Survey <- data.frame(Age, Sex, Country, Health)
+head(Survey)
+
+# Load function
+source("http://pcwww.liv.ac.uk/~william/R/crosstab.r")
+
+# Frequency count
+crosstab(Survey, row.vars = "Age", col.vars = "Sex", type = "f")
+
+
+# Row percentages
+crosstab(Survey, row.vars = "Age", col.vars = "Sex", type = "r")
+
+# Column percentages
+crosstab(Survey, row.vars = "Age", col.vars = "Sex", type = "c")
+
+
+# Joint percentages (sums to 100 within final two table dimensions)
+crosstab(Survey, row.vars = c("Age", "Sex"), col.vars = "Health", type = "j")
+
+# Total percentages (sums to 100 across entire table)
+crosstab(Survey, row.vars = c("Age", "Sex"), col.vars = "Health", type = "t")
