@@ -1,0 +1,26 @@
+# Source: https://www.mango-solutions.com/50-shades-of-grey-according-to-r/
+
+# Shades of grey
+greys <- grep("gr[ea]y", colours(), value = TRUE)
+length(greys)
+
+greys <- grep("^gr[ea]y", colours(), value = TRUE)
+
+length(greys)
+
+greys <- grep("^grey", colours(), value = TRUE)
+
+length(greys)
+
+shadesOfGrey <- colorRampPalette(c("grey0", "grey100"))
+
+
+shadesOfGrey(2)
+
+fiftyGreys <- shadesOfGrey(50)
+
+mat <- matrix(rep(1:50, each = 50))
+
+image(mat, axes = FALSE, col = fiftyGreys)
+
+box()
