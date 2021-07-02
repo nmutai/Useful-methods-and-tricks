@@ -1,0 +1,38 @@
+# Multiple imputation by predictive mean matching.
+# Example
+# Airquality data
+# Check for missing values
+anyNA(airquality)
+
+# TRUE
+
+# Missing values per column
+colSums(is.na(airquality))
+
+# Ozone has 37 missing values
+# Solar.R has 7 missing values
+
+# Omit missing values and find the mean
+mean(airquality$Ozone, na.rm = TRUE)
+mean(airquality$Solar.R, na.rm = TRUE)
+
+#500 iterataions of predictive mean mapping for imputing
+im_aqty <- mice(airquality, m=5, maxit = 50, method = 'pmm', seed = 500)
+
+summary(im_aqty)
+
+im_aqty$imp$Ozone #values imputed in ozone
+
+# Get back the completed dataset 
+completedData <- complete(im_aqty,1)
+head(completedData)
+
+# Find mean after imputation
+mean(completedData$Ozone)
+mean(completedData$Solar.R)
+
+# Comapare to mean before
+mean(airquality$Ozone, na.rm = TRUE)
+mean(airquality$Solar.R, na.rm = TRUE)
+
+# Nearly the same values but with a complete data set. 
