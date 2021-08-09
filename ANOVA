@@ -1,0 +1,100 @@
+# One-way ANOVA Hypothesis Test: An example
+students <- read.csv("https://userpage.fu-berlin.de/soga/200/2010_data_sets/students.csv")
+graduated <- subset(students, graduated == 1)
+n <- 275
+data.idx <- sample(x = 1:nrow(graduated), size = n)
+data <- graduated[data.idx, c('major','salary')]
+head(data, 10)
+library(ggplot2)
+p <- ggplot(data, aes(major)) +
+    geom_bar(width=.7) +
+    coord_flip() +
+    theme(axis.title.y=element_blank())
+p
+
+
+p <- qplot(sample = salary, 
+           data = data, 
+           color=major) +
+    theme_minimal()
+p
+
+
+#calculate standart deviation
+sd.groups <- tapply(X = data$salary, INDEX = data$major, FUN = sd)
+sd.groups
+
+#calculate ratio of the largest to the smallest sample standard deviation
+ratio <- max(as.vector(sd.groups)) / min(as.vector(sd.groups))
+ratio
+
+alpha <- 0.01
+
+k <- length(levels(data$major))
+n <- nrow(data)
+
+df.G <- k - 1
+df.G
+
+
+df.E <- n - k 
+df.E
+
+
+df.T <- n - 1
+df.T
+
+
+# calculate overall mean
+x.bar <- mean(data$salary)
+
+# observation data
+xi <- data$salary
+
+# calculate SST
+SST <- sum((xi - x.bar)^2)
+SST
+
+
+# calculate sample size for each group
+n.j <- tapply(X = data$salary, INDEX = data$major, FUN = length)
+
+# calculate mean for each group
+xi.bar <- tapply(X = data$salary, INDEX = data$major, FUN = mean)
+
+# calculate SSG
+SSG <- sum(n.j * (xi.bar - x.bar)^2)
+SSG
+
+
+# calculate standart deviation for each group
+s2.j <- tapply(X = data$salary, INDEX = data$major, FUN = sd)
+
+# calculate SSE
+SSE <- sum((n.j-1)*s2.j^2)
+SSE
+
+
+# calculate MSG
+MSG <- SSG/(k-1)
+MSG
+
+
+# calculate MSE
+MSE <- SSE/(n-k)
+MSE
+
+Fstat <- MSG/MSE
+Fstat
+
+df1 = k-1
+df2 = n-k
+
+p.value <- pf(q = Fstat, df1 = df1, df2 = df2, lower.tail = FALSE)
+p.value
+
+p.value <= alpha
+
+# Using aov
+anova <- aov(salary ~ major, data = data)
+summary(anova)
