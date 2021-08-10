@@ -1,0 +1,22 @@
+# Draw Multiple Variables as Lines to Same ggplot2 Plot in R
+# Source: https://statisticsglobe.com/r-draw-multiple-lines-to-same-ggplot2-plot
+set.seed(6532465)                    # Create example data
+data <- data.frame(x = 1:50, y1 = sort(rnorm(50)),
+                   y2 = sort(rnorm(50, 0.5)))
+head(data)                           # Head of example data
+library("ggplot2")                   # Load ggplot2 package
+
+ggp1 <- ggplot(data, aes(x)) +       # Create ggplot2 plot
+    geom_line(aes(y = y1, color = "red")) +
+    geom_line(aes(y = y2, color = "blue"))
+ggp1                                 # Draw ggplot2 plot
+
+library("reshape2")
+
+data_long <- melt(data, id = "x")    # Convert data to long format
+head(data_long)                      # Head of long data
+
+ggp2 <- ggplot(data_long, aes(x = x,y = value,
+                   color = variable)) +
+        geom_line()
+ggp2                                 # Draw ggplot2 plot
