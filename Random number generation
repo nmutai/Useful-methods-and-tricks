@@ -1,0 +1,12 @@
+# Source: https://statisticsglobe.com/random-numbers-in-r
+# Example 1: Draw Random Numbers from Probability Distribution
+set.seed(13579)                        # Set seed
+N <- 10000                             # Sample size
+rand1 <- rnorm(N)                      # Normally distributed random values
+rand1                                  # Print random numbers to RStudio console
+hist(rand1, breaks = 100)              # Histogram of random numbers
+
+# Example 2: Draw Random Numbers from Given Data
+x <- 1:100                             # Create example data
+x                                      # Print example data to RStudio console
+sample(x, 10)                          # Simple random sampling from example data
