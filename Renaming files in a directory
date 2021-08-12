@@ -1,0 +1,16 @@
+# Renaming files in a directory
+# Source: https://statisticsglobe.com/rename-files-using-r
+setwd("C:/Users/nmutai/Desktop/Desktop6/Naming_files")
+my_path <- "C:/Users/nmutai/Desktop/Desktop6/Naming_files/"  # Define working directory
+my_path                                            # Print path to working directory
+
+file_names_old <- list.files(my_path)              # Get current file names
+file_names_old                                     # Print current file names
+
+file_names_new <- paste0("File No ",               # Define new file names
+                         1:length(file_names_old),
+                         ".R")
+file_names_new 
+
+file.rename(paste0(my_path, file_names_old),       # Rename files
+            paste0(my_path, file_names_new))
