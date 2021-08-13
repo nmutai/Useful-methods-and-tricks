@@ -1,0 +1,19 @@
+# Re-order boxplots
+# Source: https://www.youtube.com/watch?v=kLw_hSZhWCI
+set.seed(76259402)                           # Create example data
+data <- data.frame(group = rep(LETTERS[1:4], each = 25),
+                   values = rnorm(100))
+
+boxplot(data$values ~ data$group)            # Default boxplot in Base R
+
+data_new <- data                             # Duplicate data
+data_new$group ＜- factor(data_new$group,     # Reorder factor levels
+                         c("C", "B", "D", "A"))
+
+boxplot(data_new$values ~ data_new$group)    # Reordered boxplot in Base R
+
+# install.packages("ggplot2")                  # Install & load ggplot2
+library("ggplot2")
+
+ggplot(data_new, aes(group, values)) +       # Reordered boxplot in ggplot2
+    geom_boxplot()
