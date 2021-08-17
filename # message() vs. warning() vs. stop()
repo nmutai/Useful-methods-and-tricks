@@ -1,0 +1,13 @@
+# Source: https://statisticsglobe.com/message-warning-stop-function-in-r/
+# message() vs. warning() vs. stop()
+message("This is a message")            # Using message function
+warning("This is a warning message")    # Using warning function
+stop("This is an error message") # Using stop function
+for(i in 1:10) {                        # For-loop containing error condition
+    if(i != 5) {
+        print(paste("Finished loop iteration No.", i))
+    }
+    if(i == 5) {
+        stop("i was equal to 5")
+    }
+}
