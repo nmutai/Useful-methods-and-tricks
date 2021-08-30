@@ -1,0 +1,55 @@
+# ANOVA
+# https://hydroblog.netlify.app/blog/anova/anova/2021-08-17/
+library(tidyverse)
+wind_speed <- tribble(
+    ~loc_1, ~loc_2, ~loc_3, ~month,
+    2.21,0.87,1.89, 1,
+    0.62, 1.65, 3.03, 2,
+    2.03, 0.74, 1.85, 3,
+    0.8, 3.52, -0.29, 4,
+    0.84, 2.27, 0.68, 5,
+    1.52, 2.15, 2.76, 6,
+    0.57, 1.33, 1.03, 7,
+    1.39, 1.87, 0.88, 8,
+    2.3, 1.93, 1.03, 9,
+    1.78, 2.48, 2.49, 10,
+    2.17, 1.44, 0.88, 11,
+    1.72, 1.03, 1.17, 12
+)
+
+wind_speed_piv <- wind_speed %>% 
+    pivot_longer(cols = contains('loc'))
+
+overall_mean <- wind_speed_piv %>% 
+                summarise(overall_mean = mean(value))
+
+mean_of_each <- wind_speed_piv %>% 
+                group_by(name) %>% 
+                summarise(mean_of_each = mean(value)) %>% 
+                ungroup
+
+ssa <- wind_speed_piv %>% 
+       mutate(overall_mean = overall_mean) %>% 
+       left_join(mean_of_each, by = 'name') %>% 
+       group_by(name)  %>% 
+       slice_head(n = 1) %>% 
+       ungroup() %>% 
+       summarise(ssa = 12*sum((mean_of_each - overall_mean)^2))
+
+sse <- wind_speed_piv %>% 
+       mutate(overall_mean = overall_mean) %>% 
+       left_join(mean_of_each, by = 'name') %>% 
+       group_by(name) %>% 
+       summarise(sse = sum((value - mean_of_each)^2)) %>% 
+       pull(sse) %>% sum()
+
+MSA = ssa/2
+MSE = sse/33
+
+f = MSA/MSE
+
+f
+
+# Smart way
+model <- lm(value~name, data = wind_speed_piv)
+anova(model)
