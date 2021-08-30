@@ -1,0 +1,69 @@
+# SQL in R
+# https://dept.stat.lsa.umich.edu/~jerrick/courses/stat701/notes/sql.html
+library(sqldf)
+sqldf('SELECT age, circumference 
+      FROM Orange 
+      WHERE Tree = 1 
+      ORDER BY circumference ASC')
+sqldf("SELECT * FROM iris")
+sqldf("select * from iris")
+sqldf("SELECT * from IRIS") # error
+data(BOD)
+BOD
+sqldf('SELECT demand 
+      FROM BOD')
+sqldf('SELECT Time, demand 
+      FROM BOD')
+
+iris1 <- sqldf('SELECT Petal.Width 
+               FROM iris') # error
+iris2 <- sqldf('SELECT "Petal.Width" 
+               FROM iris')
+bod2 <- sqldf('SELECT * FROM BOD')
+bod2
+
+sqldf('SELECT * 
+      FROM iris 
+      LIMIT 5')
+
+sqldf("SELECT * 
+      FROM Orange 
+      ORDER BY age ASC, circumference DESC 
+      LIMIT 5")
+
+sqldf('SELECT demand 
+      FROM BOD 
+      WHERE Time < 3')
+
+sqldf('SELECT * 
+      FROM rock 
+      WHERE (peri > 5000 AND shape < .05) OR perm > 1000')
+sqldf('SELECT * 
+      FROM BOD 
+      WHERE Time IN (1,7)')
+sqldf('SELECT * 
+      FROM BOD 
+      WHERE Time NOT IN (1,7)')
+
+sqldf('SELECT * 
+      FROM chickwts 
+      WHERE feed LIKE "%bean" LIMIT 5')
+
+sqldf('SELECT * 
+      FROM chickwts 
+      WHERE feed NOT LIKE "%bean" LIMIT 5')
+
+sqldf("SELECT AVG(circumference) 
+      FROM Orange")
+
+sqldf("SELECT tree, 
+      AVG(circumference) AS meancirc 
+      FROM Orange 
+      GROUP BY tree")
+
+d <- data.frame(a = c(1,1,1), b = c(1,NA,NA))
+d
+
+sqldf("SELECT COUNT() as numrows FROM d")
+
+sqldf("SELECT COUNT(b) FROM d")
