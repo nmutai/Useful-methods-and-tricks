@@ -1,0 +1,39 @@
+# Quantile regression in R
+# Source: https://www.r-bloggers.com/2019/01/quantile-regression-in-r-2/
+library(quantreg)
+data(mtcars)
+rqfit <- rq(mpg ~ wt, data = mtcars)
+rqfit
+summary(rqfit)
+
+plot(mpg ~ wt, data = mtcars, pch = 16, main = "mpg ~ wt")
+abline(lm(mpg ~ wt, data = mtcars), col = "red", lty = 2)
+abline(rq(mpg ~ wt, data = mtcars), col = "blue", lty = 2)
+legend("topright", legend = c("lm", "rq"), col = c("red", "blue"), lty = 2)
+
+
+y <- c(mtcars$mpg, 40, 36)
+x <- c(mtcars$wt, 5, 4)
+plot(y ~ x, pch = 16, main = "mpg ~ wt")
+points(c(5, 4), c(40, 36), pch = 16, col = "dark orange")
+abline(lm(mpg ~ wt, data = mtcars), col = "red", lty = 2)
+abline(lm(y ~ x), col = "red")
+abline(rq(mpg ~ wt, data = mtcars), col = "blue", lty = 2)
+abline(rq(y ~ x), col = "blue")
+
+
+multi_rqfit <- rq(mpg ~ wt, data = mtcars, tau = seq(0, 1, by = 0.1))
+multi_rqfit
+
+
+# plotting different quantiles
+colors <- c("#ffe6e6", "#ffcccc", "#ff9999", "#ff6666", "#ff3333",
+            "#ff0000", "#cc0000", "#b30000", "#800000", "#4d0000", "#000000")
+plot(mpg ~ wt, data = mtcars, pch = 16, main = "mpg ~ wt")
+for (j in 1:ncol(multi_rqfit$coefficients)) {
+    abline(coef(multi_rqfit)[, j], col = colors[j])
+}
+
+rq(mpg ~ wt - 1, data = mtcars)
+rq(mpg ~ wt * cyl, data = mtcars)
+rq(mpg ~ ., data = mtcars)
