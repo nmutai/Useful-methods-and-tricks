@@ -1,0 +1,15 @@
+# Split train and test data
+# https://statisticsglobe.com/r-split-data-into-train-and-test-sets
+set.seed(92734)                                    # Create example data
+data <- data.frame(x1 = rnorm(1000),
+                   x2 = rnorm(1000))
+head(data)                                         # First rows of example data
+
+split_dummy <- sample(c(rep(0, 0.7 * nrow(data)),  # Create dummy for splitting
+                        rep(1, 0.3 * nrow(data))))
+split_dummy                                        # Print dummy
+
+table(split_dummy)                                 # Table of dummy
+
+data_train <- data[split_dummy == 0, ]             # Create train data
+data_test <- data[split_dummy == 1, ]              # Create test data
