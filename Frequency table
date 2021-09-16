@@ -33,3 +33,34 @@ title <- cbind(table(lungcap$age_classes))
 colnames(title) <- c("Frequency")
 title
 detach(lungcap)
+
+
+
+#########################
+
+
+
+# Ungrouped distribution
+x <- c(16, 14, 15, 13, 12, 14, 16, 15, 15, 14, 17,
+  16, 13, 16, 15, 14, 18, 13, 15, 17)
+Freq <- table(x)
+relFreq <- prop.table(Freq)
+Cumulative_Freq <- cumsum(Freq)
+Cumulative_Relative_Freq <- cumsum(relFreq)
+data.frame(xval = names(Freq), Freq = Freq, relFreq = relFreq,
+  Cumulative_Freq = Cumulative_Freq,
+  Cumulative_Relative_Freq = Cumulative_Relative_Freq)
+
+# Grouped frequency
+value <- c(15.0, 17.4, 10.3, 9.2, 20.7, 18.9, 16.6, 22.4, 23.7, 18.6, 26.1, 16.5, 19.7, 12.9, 15.7,
+           30.8, 15.4, 20.3, 24.0, 29.6, 18.3, 23.7, 17.8, 24.6, 23.0, 21.4, 32.8, 12.5, 17.5, 18.3,
+           23.2, 21.6, 20.8, 29.8, 24.5, 28.4, 13.5, 17.1, 27.1, 27.9)
+breaks <- seq(from = min(value), to = max(value), by = 4)
+value$age_classes <- cut(value, breaks = breaks, right = FALSE, 
+                           include.lowest = TRUE)
+table(value$age_classes)
+cbind(table(value$age_classes))
+title <- cbind(table(value$age_classes))
+colnames(title) <- c("Frequency")
+title
+
