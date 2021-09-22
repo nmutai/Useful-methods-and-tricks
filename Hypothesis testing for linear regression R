@@ -1,0 +1,58 @@
+# Hypothesis testing for linear regression R
+rm(list = ls(all.names = TRUE))
+options(warn = -1)
+library(tidyverse)
+library(jtools)
+library(car)
+library(vtable)
+
+data("txhousing")
+
+vtable(txhousing)
+
+m <- lm(listings ~ inventory, data = txhousing)
+
+export_summs(m, digits = 3)
+
+export_summs(m, digits = 3, error_format = "{statistic}, p = p.value")
+
+coef(m)[2]
+
+beta1_hat <- coef(m)[2]
+
+summary(m)$coefficients
+
+se_beta1 <- summary(m)$coefficients[2, 2]
+
+(z <- (beta1_hat - 0) / se_beta1)
+
+(z_100 <- (beta1_hat - 100) / se_beta1)
+
+# Only works for negative z!
+# one sided test
+pnorm(z)
+
+# two sided
+2 * pnorm(z)
+
+# for positive z
+
+1 - pnorm(z)
+1 - pnorm(1.96)
+
+2 * (1 - pnorm(z))
+
+2 * (1 - pnorm(1.96))
+
+
+# confidence interval
+
+beta1_hat - 1.96 * se_beta1
+
+beta1_hat + 1.96 * se_beta1
+
+linearHypothesis(m, "inventory = 0")
+
+linearHypothesis(m, "inventory = 100")
+
+linearHypothesis(m, "inventory = 100", white.adjust = TRUE)
